@@ -19,3 +19,6 @@ def View(request, story_id):
     }
 
     return render(request, 'shaggydogtale/view.html', context)
+
+def Create(request):
+    return render(request, 'shaggydogtale/create.html')
