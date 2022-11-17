@@ -1,0 +1,14 @@
+{% extends 'shaggydogtale/base.html' %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>{{story.title}}</h2>
+                <hr>
+                <p>{{story.beginning}}</p>
+                <p>{{story.middle}}</p>
+                <p>{{story.end}}</p>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
