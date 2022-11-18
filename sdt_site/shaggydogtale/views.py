@@ -1,5 +1,8 @@
-from django.shortcuts import render
-from .models import Story
+from django.shortcuts import render, redirect
+from .models import Story, Contribution
+from .forms import BeginningForm, MiddleForm, EndForm
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 # Create your views here.
 def Browse(request):
@@ -21,4 +24,19 @@ def View(request, story_id):
     return render(request, 'shaggydogtale/view.html', context)
 
 def Create(request):
-    return render(request, 'shaggydogtale/create.html')
+    beginningForm = BeginningForm(request.POST or None)
+
+    if beginningForm.is_valid():
+        story_id = beginningForm.save()
+
+        Contribution.objects.create(user=request.user, story=story_id, section='b')
+
+        messages.success(request, f'New story saved')
+        # redirect to users tales
+        return redirect('shaggydogtale:browse')
+
+    context = {
+        'beginningForm': beginningForm
+    }
+
+    return render(request, 'shaggydogtale/create.html', context)

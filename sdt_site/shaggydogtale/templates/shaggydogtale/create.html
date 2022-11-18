@@ -1,2 +1,21 @@
 {% extends 'shaggydogtale/base.html' %}
-<h2>Create Page</h2>
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Create Page</h2>
+            <hr>
+            User_ID: {{user.id}}
+            <form method="POST">
+                {% csrf_token %}
+                <table>
+                    {{beginningForm.as_table}}
+                </table>
+                <tr>
+                    <button class="btn btn-primary" type="submit">Save Story</button>
+                </tr>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock body %}
