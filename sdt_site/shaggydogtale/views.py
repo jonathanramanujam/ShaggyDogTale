@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Story, Contribution
 from .forms import BeginningForm, MiddleForm, EndForm
 from django.contrib import messages
-from django.contrib.auth.models import User
+from itertools import chain
 
 # Create your views here.
 def Browse(request):
@@ -13,6 +13,16 @@ def Browse(request):
     }
 
     return render(request, 'shaggydogtale/browse.html', context)
+
+def Contributed(request):
+    contributions = Contribution.objects.filter(user = request.user)
+
+    context = {
+        'contributions': contributions
+    }
+
+    return render(request, 'shaggydogtale/contributed.html', context)
+
 
 def View(request, story_id):
     story = Story.objects.get(id=story_id)

@@ -6,7 +6,8 @@ app_name = 'shaggydogtale'
 urlpatterns = [
     path('browse', views.Browse, name="browse"),
     path('create', views.Create, name="create"),
-    path('<story_id>', views.View, name="view"),
+    path('contributed', views.Contributed, name="contributed"),
+    path('<story_id>', views.View, name="view")
 ]
 
 urlpatterns += staticfiles_urlpatterns()
