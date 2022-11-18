@@ -15,9 +15,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
+            {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'shaggydogtale:create' %}">Create a Tale</a>
+              <a class="nav-link" href="{% url 'shaggydogtale:create' %}">Create a Tale</a>
             </li>
+            {% endif %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'shaggydogtale:browse' %}">Browse Tales</a>
             </li>
