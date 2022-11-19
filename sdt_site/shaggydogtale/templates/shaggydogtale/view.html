@@ -3,6 +3,15 @@
     <div class="container">
         <div class="row">
             <div class="col">
+                {% for c in contributions %}
+                    <div>contribution: user - {{c.id}} section - {{c.section}}</div>
+                {% endfor %}
+                <div>userContribution: {{userContribution}}</div>
+                <div>message: {{message}}</div>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{form.as_table}}
+                </form>
                 <h2>{{story.title}}</h2>
                 <hr>
                 <p>{{story.beginning}}</p>
