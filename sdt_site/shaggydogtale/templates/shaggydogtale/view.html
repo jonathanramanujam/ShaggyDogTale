@@ -3,20 +3,78 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                {% for c in contributions %}
-                    <div>contribution: user - {{c.id}} section - {{c.section}}</div>
-                {% endfor %}
                 <div>userContribution: {{userContribution}}</div>
                 <div>message: {{message}}</div>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{form.as_table}}
-                </form>
-                <h2>{{story.title}}</h2>
-                <hr>
-                <p>{{story.beginning}}</p>
-                <p>{{story.middle}}</p>
-                <p>{{story.end}}</p>
+                {% comment %} if user contributed, add a form for their contribution {% endcomment %}
+                {% if userContribution %}
+                    {% if userContribution.section == 'b' %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{form.as_table}}
+                            <tr>
+                                <button class="btn btn-primary" type="submit">Save Story</button>
+                            </tr>
+                        </form>
+                    {% else %}
+                        <h2>{{story.title}}</h2>
+                        <hr>
+                        <p>{{story.beginning}}</p>
+                    {% endif %}
+
+                    {% if userContribution.section == 'm' %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{form.as_table}}
+                            <tr>
+                                <button class="btn btn-primary" type="submit">Save Story</button>
+                            </tr>
+                        </form>
+                    {% else %}
+                        <p>{{story.middle}}</p>
+                    {% endif %}
+
+                    {% if userContribution.section == 'e' %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{form.as_table}}
+                        <tr>
+                            <button class="btn btn-primary" type="submit">Save Story</button>
+                        </tr>
+                    </form>
+                    {% else %}
+                        <p>{{story.end}}</p>
+                    {% endif %}
+
+                {% comment %} If user did not contribute {% endcomment %}
+                {% else %}
+                    <h2>{{story.title}}</h2>
+                    <hr>
+                    <p>{{story.beginning}}</p>
+
+                    {% if contributions.count == 1 %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{form.as_table}}
+                            <tr>
+                                <button class="btn btn-primary" type="submit">Save Story</button>
+                            </tr>
+                        </form>
+                    {% else %}
+                        <p>{{story.middle}}</p>
+                    {% endif %}
+
+                    {% if contributions.count == 2 %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{form.as_table}}
+                            <tr>
+                                <button class="btn btn-primary" type="submit">Save Story</button>
+                            </tr>
+                        </form>
+                    {% else %}
+                        <p>{{story.end}}</p>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>

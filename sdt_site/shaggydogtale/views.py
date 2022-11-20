@@ -37,33 +37,45 @@ def View(request, story_id):
 
     # If the current user is a contributor
     if userContribution:
-        message='User Contributed'
         # if contribution is beginning, add beginningform
         if userContribution.section == 'b':
-            message+=' Beginning'
             form = BeginningForm(request.POST or None, instance=story)
             if form.is_valid():
                 form.save()
+                messages.success(request, f'Beginning updated for {story.title}!')
         # elseif contribution is middle, add middleform
-        if userContribution.section == 'm':
-            message+=' Middle'
+        elif userContribution.section == 'm':
             form = MiddleForm(request.POST or None, instance=story)
             if form.is_valid():
                 form.save()
+                messages.success(request, f'Middle updated for {story.title}!')
         # elseif contribution is end, add endform
-        if userContribution.section == 'e':
-            message+=' End'
+        elif userContribution.section == 'e':
             form = EndForm(request.POST or None, instance=story)
             if form.is_valid():
                 form.save()
+                messages.success(request, f'End updated for {story.title}!')
 
     # Else, the current user has not contributed to the story
     else:
-        message="User did not contribute"
         # if middle has not been written, show middleform
-
+        if contributions.count() == 1:
+            form = MiddleForm(request.POST or None, instance=story)
+            if form.is_valid():
+                story_id = form.save()
+                Contribution.objects.create(user=request.user, story=story_id, section='m')
+                messages.success(request, f'Middle created for {story.title}!')
         # elseif end has not been written, show endform
+        elif contributions.count() == 2:
+            form = EndForm(request.POST or None, instance=story)
+            if form.is_valid():
+                story_id = form.save()
+                Contribution.objects.create(user=request.user, story=story_id, section='e')
+                messages.success(request, f'End created for {story.title}!')
         # else, the story is complete, just display.
+        else:
+            message='Story complete'
+
 
     context = {
         'story': story,
