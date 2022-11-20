@@ -1,6 +1,6 @@
 {% extends 'shaggydogtale/base.html' %}
 {% block body %}
-<h2>Your Tales</h2>
+<h2>{{title}}</h2>
     {% for contribution in contributions %}
         <a href="{% url 'shaggydogtale:view' contribution.story.id %}">{{contribution.story.title}}</a>
     {% endfor %}

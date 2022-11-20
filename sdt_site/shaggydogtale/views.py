@@ -14,10 +14,18 @@ def Browse(request):
 
     return render(request, 'shaggydogtale/browse.html', context)
 
-def Contributed(request):
-    contributions = Contribution.objects.filter(user = request.user)
+def Contributed(request, user_id=None):
+    title = None
+    if user_id == None:
+        contributions = Contribution.objects.filter(user = request.user)
+        title = 'Your Tales'
+    else:
+        user = User.objects.get(id=user_id)
+        contributions = Contribution.objects.filter(user = user)
+        title = f'{user.username}\'s Tales'
 
     context = {
+        'title': title,
         'contributions': contributions
     }
 
@@ -40,11 +48,11 @@ def View(request, story_id):
         # Get the usernames of contributors for each section
         match contribution.section:
             case 'b':
-                beginningContributor = User.objects.get(id=contribution.user.id).username
+                beginningContributor = User.objects.get(id=contribution.user.id)
             case 'm':
-                middleContributor = User.objects.get(id=contribution.user.id).username
+                middleContributor = User.objects.get(id=contribution.user.id)
             case 'e':
-                endContributor = User.objects.get(id=contribution.user.id).username
+                endContributor = User.objects.get(id=contribution.user.id)
 
     # #Attempt to get the user contribution
     # try:

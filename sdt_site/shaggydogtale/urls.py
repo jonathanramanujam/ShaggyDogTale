@@ -7,6 +7,7 @@ urlpatterns = [
     path('browse', views.Browse, name="browse"),
     path('create', views.Create, name="create"),
     path('contributed', views.Contributed, name="contributed"),
+    path('contributed/<user_id>', views.Contributed, name="contributed"),
     path('<story_id>', views.View, name="view")
 ]
 
