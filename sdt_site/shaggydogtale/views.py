@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Story, Contribution
+from .models import Story, Contribution, User
 from .forms import BeginningForm, MiddleForm, EndForm
 from django.contrib import messages
 from itertools import chain
@@ -26,12 +26,31 @@ def Contributed(request):
 
 def View(request, story_id):
     story = Story.objects.get(id=story_id)
+
     contributions = story.contributions.all()
-    #Attempt to get the user contribution
-    try:
-        userContribution = contributions.get(user=request.user)
-    except:
-        userContribution = None
+    userContribution = None
+    beginningContributor = None
+    middleContributor = None
+    endContributor = None
+    for contribution in contributions:
+        # Check if this is the current user's contribution
+        if contribution.user == request.user:
+            userContribution = contribution
+
+        # Get the usernames of contributors for each section
+        match contribution.section:
+            case 'b':
+                beginningContributor = User.objects.get(id=contribution.user.id).username
+            case 'm':
+                middleContributor = User.objects.get(id=contribution.user.id).username
+            case 'e':
+                endContributor = User.objects.get(id=contribution.user.id).username
+
+    # #Attempt to get the user contribution
+    # try:
+    #     userContribution = contributions.get(user=request.user)
+    # except:
+    #     userContribution = None
     message=None
     form=None
 
@@ -65,6 +84,7 @@ def View(request, story_id):
                 story_id = form.save()
                 Contribution.objects.create(user=request.user, story=story_id, section='m')
                 messages.success(request, f'Middle created for {story.title}!')
+                return redirect('shaggydogtale:view', story_id=story.id)
         # elseif end has not been written, show endform
         elif contributions.count() == 2:
             form = EndForm(request.POST or None, instance=story)
@@ -72,6 +92,7 @@ def View(request, story_id):
                 story_id = form.save()
                 Contribution.objects.create(user=request.user, story=story_id, section='e')
                 messages.success(request, f'End created for {story.title}!')
+                return redirect('shaggydogtale:view', story_id=story.id)
         # else, the story is complete, just display.
         else:
             message='Story complete'
@@ -81,6 +102,9 @@ def View(request, story_id):
         'story': story,
         'contributions': contributions,
         'userContribution': userContribution,
+        'beginningContributor': beginningContributor,
+        'middleContributor': middleContributor,
+        'endContributor': endContributor,
         'message': message,
         'form': form
     }
