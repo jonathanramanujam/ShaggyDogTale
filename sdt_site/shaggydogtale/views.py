@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Story, Contribution, User, Vote
-from .forms import BeginningForm, MiddleForm, EndForm, VoteForm
+from .forms import BeginningForm, MiddleForm, EndForm
 from django.contrib import messages
-from itertools import chain
 
 # Create your views here.
 def Browse(request):
@@ -40,8 +39,9 @@ def View(request, story_id):
     beginningContributor = None
     middleContributor = None
     endContributor = None
-    upvoteForm = None
-    downvoteForm = None
+    beginningContributorRating = 0
+    middleContributorRating = 0
+    endContributorRating = 0
     userVote = None
 
     for contribution in contributions:
@@ -53,10 +53,19 @@ def View(request, story_id):
         match contribution.section:
             case 'b':
                 beginningContributor = User.objects.get(id=contribution.user.id)
+                for contribution in beginningContributor.contributions.all():
+                    for vote in contribution.story.votes.all():
+                        beginningContributorRating += vote.vote
             case 'm':
                 middleContributor = User.objects.get(id=contribution.user.id)
+                for contribution in middleContributor.contributions.all():
+                    for vote in contribution.story.votes.all():
+                        middleContributorRating += vote.vote
             case 'e':
                 endContributor = User.objects.get(id=contribution.user.id)
+                for contribution in endContributor.contributions.all():
+                    for vote in contribution.story.votes.all():
+                        endContributorRating += vote.vote
 
     message=None
     form=None
@@ -107,8 +116,12 @@ def View(request, story_id):
             if userVote.count() == 0:
                 if 'Upvote' in request.POST:
                     Vote.objects.create(user=request.user, story=story, vote=1)
+                    messages.success(request, f'Upvoted {story.title}!')
+                    return redirect('shaggydogtale:view', story_id=story.id)
                 if 'Downvote' in request.POST:
                     Vote.objects.create(user=request.user, story=story, vote=-1)
+                    messages.success(request, f'Downvoted {story.title}!')
+                    return redirect('shaggydogtale:view', story_id=story.id)
 
     storyRating = 0
     for vote in story.votes.all():
@@ -121,10 +134,11 @@ def View(request, story_id):
         'beginningContributor': beginningContributor,
         'middleContributor': middleContributor,
         'endContributor': endContributor,
+        'beginningContributorRating': beginningContributorRating,
+        'middleContributorRating': middleContributorRating,
+        'endContributorRating': endContributorRating,
         'message': message,
         'form': form,
-        'upvoteForm': upvoteForm,
-        'downvoteForm': downvoteForm,
         'userVote': userVote,
         'storyRating': storyRating
     }

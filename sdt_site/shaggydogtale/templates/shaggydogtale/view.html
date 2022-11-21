@@ -6,19 +6,19 @@
                 storyRating: {{storyRating}}
                 <h5>Contributors</h5>
                 {% if beginningContributor %}
-                    <li>Beginning: <a href="{% url 'shaggydogtale:contributed' beginningContributor.id %}">{{beginningContributor.username}}</a> @ 900</li>
+                    <li>Beginning: <a href="{% url 'shaggydogtale:contributed' beginningContributor.id %}">{{beginningContributor.username}}</a> @ {{beginningContributorRating}}</li>
                 {% else %}
                     <li>Beginning: None</li>
                 {% endif %}
 
                 {% if middleContributor %}
-                    <li>Middle: <a href="{% url 'shaggydogtale:contributed' middleContributor.id %}">{{middleContributor.username}}</a> @ 650</li>
+                    <li>Middle: <a href="{% url 'shaggydogtale:contributed' middleContributor.id %}">{{middleContributor.username}}</a> @ {{middleContributorRating}}</li>
                 {% else %}
                     <li>Middle: None</li>
                 {% endif %}
 
                 {% if endContributor %}
-                    <li>End: <a href="{% url 'shaggydogtale:contributed' endContributor.id %}">{{endContributor.username}}</a> @ 382</li>
+                    <li>End: <a href="{% url 'shaggydogtale:contributed' endContributor.id %}">{{endContributor.username}}</a> @ {{endContributorRating}}</li>
                 {% else %}
                     <li>End: None</li>
                 {% endif %}
