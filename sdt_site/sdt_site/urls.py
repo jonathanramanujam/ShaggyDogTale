@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from users import views as user_views
+from shaggydogtale import views as shaggydogtale_views
 from django.contrib.auth import views as authentication_views
 
 urlpatterns = [
     path('shaggydogtale/', include('shaggydogtale.urls')),
-    # path('', include('shaggydogtale.urls')),
+    path('', shaggydogtale_views.Browse, name='browse'),
     path('admin/', admin.site.urls),
     path('register/', user_views.register, name='register'),
     path('login/', authentication_views.LoginView.as_view(template_name='users/login.html'), name='login'),

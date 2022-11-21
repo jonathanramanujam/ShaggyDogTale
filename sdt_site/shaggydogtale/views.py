@@ -105,26 +105,25 @@ def View(request, story_id):
 
     # Else, the current user has not contributed to the story
     else:
-        # if request.user in request:
-            # if middle has not been written, show middleform
-            if contributions.count() == 1:
-                form = MiddleForm(request.POST or None, instance=story)
-                if form.is_valid():
-                    story_id = form.save()
-                    Contribution.objects.create(user=request.user, story=story_id, section='m')
-                    messages.success(request, f'Middle created for {story.title}!')
-                    return redirect('shaggydogtale:view', story_id=story.id)
-            # elseif end has not been written, show endform
-            elif contributions.count() == 2:
-                form = EndForm(request.POST or None, instance=story)
-                if form.is_valid():
-                    story_id = form.save()
-                    Contribution.objects.create(user=request.user, story=story_id, section='e')
-                    messages.success(request, f'End created for {story.title}!')
-                    return redirect('shaggydogtale:view', story_id=story.id)
-            # otherwise, the story is complete and can be voted on
-            else:
-                # storyVotes = Vote.objects.filter(story=story_id)
+        # if middle has not been written, show middleform
+        if contributions.count() == 1:
+            form = MiddleForm(request.POST or None, instance=story)
+            if form.is_valid():
+                story_id = form.save()
+                Contribution.objects.create(user=request.user, story=story_id, section='m')
+                messages.success(request, f'Middle created for {story.title}!')
+                return redirect('shaggydogtale:view', story_id=story.id)
+        # elseif end has not been written, show endform
+        elif contributions.count() == 2:
+            form = EndForm(request.POST or None, instance=story)
+            if form.is_valid():
+                story_id = form.save()
+                Contribution.objects.create(user=request.user, story=story_id, section='e')
+                messages.success(request, f'End created for {story.title}!')
+                return redirect('shaggydogtale:view', story_id=story.id)
+        # otherwise, the story is complete and can be voted on
+        else:
+            if request.user.is_authenticated:
                 userVote = Vote.objects.filter(user=request.user, story=story_id)
                 if userVote.count() == 0:
                     if 'Upvote' in request.POST:
