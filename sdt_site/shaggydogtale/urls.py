@@ -8,7 +8,8 @@ urlpatterns = [
     path('create', views.Create, name="create"),
     path('contributed', views.Contributed, name="contributed"),
     path('contributed/<user_id>', views.Contributed, name="contributed"),
-    path('view/<story_id>', views.View, name="view")
+    path('view/<story_id>', views.View, name="view"),
+    path('print/<story_id>', views.Print, name="print")
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -175,15 +175,15 @@ def Create(request):
 
 def Print(request, story_id):
     story = Story.objects.get(pk=story_id)
-    template = loader.get_template('shaggydogtale/view.html')
+    template = loader.get_template('shaggydogtale/print.html')
     html = template.render({'story': story})
     options = {
         'page-size': 'Letter',
         'encoding': 'UTF-8'
     }
-    pdf = pdfkit.from_string(html, False, options)
-    response = HttpResponse(pdf, content_type='application/shaggydogtale')
-    response['Content-Disposition'] = 'attachment'
+    pdf = pdfkit.from_string(html,False, options)
     filename = f'{story.title}.pdf'
+    response = HttpResponse(pdf, content_type='application/shaggydogtale')
+    response['Content-Disposition'] = f'attachment; filename={filename}'
 
     return response

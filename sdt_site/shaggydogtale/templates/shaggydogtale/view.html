@@ -71,25 +71,31 @@
                     <p>{{story.beginning}}</p>
 
                     {% if contributions.count == 1 %}
-                        <form method="POST">
-                            {% csrf_token %}
-                            {{form.as_table}}
-                            <tr>
-                                <button class="btn btn-primary" type="submit">Save Story</button>
-                            </tr>
-                        </form>
+                        {% if user.is_authenticated %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{form.as_table}}
+                                <tr>
+                                    <button class="btn btn-primary" type="submit">Save Story</button>
+                                </tr>
+                            </form>
+                        {% endif %}
+
                     {% else %}
                         <p>{{story.middle}}</p>
                     {% endif %}
 
                     {% if contributions.count == 2 %}
-                        <form method="POST">
-                            {% csrf_token %}
-                            {{form.as_table}}
-                            <tr>
-                                <button class="btn btn-primary" type="submit">Save Story</button>
-                            </tr>
-                        </form>
+                        {% if user.is_authenticated %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{form.as_table}}
+                                <tr>
+                                    <button class="btn btn-primary" type="submit">Save Story</button>
+                                </tr>
+                            </form>
+                        {% endif %}
+
                     {% else %}
                         <p>{{story.end}}</p>
                     {% endif %}
@@ -105,6 +111,7 @@
                         </form>
                     {% endif %}
                 {% endif %}
+                <a href="{% url 'shaggydogtale:print' story.id %}" class="btn btn-primary">Save PDF</a>
             </div>
         </div>
     </div>
