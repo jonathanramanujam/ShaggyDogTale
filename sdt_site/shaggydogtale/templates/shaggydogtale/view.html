@@ -3,6 +3,8 @@
     <div class="container">
         <div class="row">
             <div class="col">
+                storyvotes: {{storyVotes.count}}
+                userVote: {{userVote.count}}
                 <h5>Contributors</h5>
                 {% if beginningContributor %}
                     <li>Beginning: <a href="{% url 'shaggydogtale:contributed' beginningContributor.id %}">{{beginningContributor.username}}</a> @ 900</li>
@@ -91,6 +93,30 @@
                         </form>
                     {% else %}
                         <p>{{story.end}}</p>
+                    {% endif %}
+
+                    {% comment %} {% if upvoteForm %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{upvoteForm.as_table}}
+                            <button class="btn btn-primary" type="submit">Upvote</button>
+                        </form>
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{downvoteForm.as_table}}
+                            <button class="btn btn-primary" type="submit">Downvote</button>
+                        </form>
+                    {% endif %} {% endcomment %}
+
+                    {% if userVote.count == 0 %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button class="btn btn-primary" name="Upvote" type="submit">Upvote</button>
+                        </form>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button class="btn btn-primary" name="Downvote" type="submit">Downvote</button>
+                        </form>
                     {% endif %}
                 {% endif %}
             </div>

@@ -18,3 +18,14 @@ class Contribution(models.Model):
     user = models.ForeignKey(User, related_name='contributions', on_delete=models.CASCADE)
     story = models.ForeignKey(Story, related_name='contributions', on_delete=models.CASCADE)
     section = models.CharField(max_length=1) # b = beginning, m = middle, e = end
+
+class Vote(models.Model):
+    def __str__(self):
+        if self.vote == 1:
+            return f'{self.story.title} +1'
+        elif self.vote == -1:
+            return f'{self.story.title} -1'
+
+    user = models.ForeignKey(User, related_name='votes', on_delete=models.CASCADE)
+    story = models.ForeignKey(Story, related_name='votes', on_delete=models.CASCADE)
+    vote = models.IntegerField()

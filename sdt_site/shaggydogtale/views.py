@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Story, Contribution, User
-from .forms import BeginningForm, MiddleForm, EndForm
+from .models import Story, Contribution, User, Vote
+from .forms import BeginningForm, MiddleForm, EndForm, VoteForm
 from django.contrib import messages
 from itertools import chain
 
@@ -40,6 +40,12 @@ def View(request, story_id):
     beginningContributor = None
     middleContributor = None
     endContributor = None
+    upvoteForm = None
+    downvoteForm = None
+
+    storyVotes = None
+    userVote = None
+
     for contribution in contributions:
         # Check if this is the current user's contribution
         if contribution.user == request.user:
@@ -54,11 +60,6 @@ def View(request, story_id):
             case 'e':
                 endContributor = User.objects.get(id=contribution.user.id)
 
-    # #Attempt to get the user contribution
-    # try:
-    #     userContribution = contributions.get(user=request.user)
-    # except:
-    #     userContribution = None
     message=None
     form=None
 
@@ -101,10 +102,23 @@ def View(request, story_id):
                 Contribution.objects.create(user=request.user, story=story_id, section='e')
                 messages.success(request, f'End created for {story.title}!')
                 return redirect('shaggydogtale:view', story_id=story.id)
-        # else, the story is complete, just display.
+        # otherwise, the story is complete and can be voted on
         else:
-            message='Story complete'
+            # storyVotes = Vote.objects.filter(story=story_id)
+            userVote = Vote.objects.filter(user=request.user, story=story_id)
+            if userVote.count() == 0:
+            #     upvoteForm = VoteForm(request.POST or None, instance=Vote(user=request.user, story=story, vote=1))
+            #     downvoteForm = VoteForm(request.POST or None, instance=Vote(user=request.user, story=story, vote=-1))
 
+            #     if upvoteForm.is_valid():
+            #         upvoteForm.save()
+
+            #     if downvoteForm.is_valid():
+            #         downvoteForm.save()
+                if 'Upvote' in request.POST:
+                    Vote.objects.create(user=request.user, story=story, vote=1)
+                if 'Downvote' in request.POST:
+                    Vote.objects.create(user=request.user, story=story, vote=-1)
 
     context = {
         'story': story,
@@ -114,7 +128,11 @@ def View(request, story_id):
         'middleContributor': middleContributor,
         'endContributor': endContributor,
         'message': message,
-        'form': form
+        'form': form,
+        'upvoteForm': upvoteForm,
+        'downvoteForm': downvoteForm,
+        'storyVotes': storyVotes,
+        'userVote': userVote
     }
 
     return render(request, 'shaggydogtale/view.html', context)
