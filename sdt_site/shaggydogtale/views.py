@@ -42,6 +42,9 @@ def Contributed(request, user_id=None):
 
 def View(request, story_id):
     story = Story.objects.get(id=story_id)
+    storyBeginning = "..." + story.beginning[round(len(story.beginning)/2) : len(story.beginning)]
+    storyMiddle = "..." + story.middle[round(len(story.middle)/2) : len(story.middle)]
+    storyEnd = "..." + story.end[round(len(story.end)/2) : len(story.end)]
 
     contributions = story.contributions.all()
     userContribution = None
@@ -102,7 +105,7 @@ def View(request, story_id):
 
     # Else, the current user has not contributed to the story
     else:
-        if request.user in request:
+        # if request.user in request:
             # if middle has not been written, show middleform
             if contributions.count() == 1:
                 form = MiddleForm(request.POST or None, instance=story)
@@ -139,6 +142,9 @@ def View(request, story_id):
 
     context = {
         'story': story,
+        'storyBeginning': storyBeginning,
+        'storyMiddle': storyMiddle,
+        'storyEnd': storyEnd,
         'contributions': contributions,
         'userContribution': userContribution,
         'beginningContributor': beginningContributor,

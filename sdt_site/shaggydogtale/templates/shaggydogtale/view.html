@@ -36,7 +36,11 @@
                     {% else %}
                         <h2>{{story.title}}</h2>
                         <hr>
-                        <p>{{story.beginning}}</p>
+                        {% if contributions.count == 3 %}
+                            <p>{{story.beginning}}</p>
+                        {% else %}
+                            <p>{{storyBeginning}}</p>
+                        {% endif %}
                     {% endif %}
 
                     {% if userContribution.section == 'm' %}
@@ -48,7 +52,11 @@
                             </tr>
                         </form>
                     {% else %}
+                        {% if contributions.count == 3 %}
                         <p>{{story.middle}}</p>
+                        {% else %}
+                            <p>{{storyMiddle}}</p>
+                        {% endif %}
                     {% endif %}
 
                     {% if userContribution.section == 'e' %}
@@ -60,16 +68,19 @@
                         </tr>
                     </form>
                     {% else %}
+                        {% if contributions.count == 3 %}
                         <p>{{story.end}}</p>
+                        {% else %}
+                            <p>{{storyEnd}}</p>
+                        {% endif %}
                     {% endif %}
 
                 {% comment %} If user did not contribute {% endcomment %}
                 {% else %}
                     <h2>{{story.title}}</h2>
                     <hr>
-                    <p>{{story.beginning}}</p>
-
                     {% if contributions.count == 1 %}
+                        <p>{{storyBeginning}}</p>
                         {% if user.is_authenticated %}
                             <form method="POST">
                                 {% csrf_token %}
@@ -80,22 +91,21 @@
                             </form>
                         {% endif %}
 
-                    {% else %}
+                    {% elif contributions.count == 2 %}
+                        <p>{{storyMiddle}}</p>
+                        {% if user.is_authenticated %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{form.as_table}}
+                                <tr>
+                                    <button class="btn btn-primary" type="submit">Save Story</button>
+                                </tr>
+                            </form>
+                        {% endif %}
+
+                    {% elif contributions.count == 3 %}
+                        <p>{{story.beginning}}</p>
                         <p>{{story.middle}}</p>
-                    {% endif %}
-
-                    {% if contributions.count == 2 %}
-                        {% if user.is_authenticated %}
-                            <form method="POST">
-                                {% csrf_token %}
-                                {{form.as_table}}
-                                <tr>
-                                    <button class="btn btn-primary" type="submit">Save Story</button>
-                                </tr>
-                            </form>
-                        {% endif %}
-
-                    {% else %}
                         <p>{{story.end}}</p>
                     {% endif %}
 
