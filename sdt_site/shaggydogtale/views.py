@@ -42,8 +42,6 @@ def View(request, story_id):
     endContributor = None
     upvoteForm = None
     downvoteForm = None
-
-    storyVotes = None
     userVote = None
 
     for contribution in contributions:
@@ -107,18 +105,14 @@ def View(request, story_id):
             # storyVotes = Vote.objects.filter(story=story_id)
             userVote = Vote.objects.filter(user=request.user, story=story_id)
             if userVote.count() == 0:
-            #     upvoteForm = VoteForm(request.POST or None, instance=Vote(user=request.user, story=story, vote=1))
-            #     downvoteForm = VoteForm(request.POST or None, instance=Vote(user=request.user, story=story, vote=-1))
-
-            #     if upvoteForm.is_valid():
-            #         upvoteForm.save()
-
-            #     if downvoteForm.is_valid():
-            #         downvoteForm.save()
                 if 'Upvote' in request.POST:
                     Vote.objects.create(user=request.user, story=story, vote=1)
                 if 'Downvote' in request.POST:
                     Vote.objects.create(user=request.user, story=story, vote=-1)
+
+    storyRating = 0
+    for vote in story.votes.all():
+        storyRating += vote.vote
 
     context = {
         'story': story,
@@ -131,8 +125,8 @@ def View(request, story_id):
         'form': form,
         'upvoteForm': upvoteForm,
         'downvoteForm': downvoteForm,
-        'storyVotes': storyVotes,
-        'userVote': userVote
+        'userVote': userVote,
+        'storyRating': storyRating
     }
 
     return render(request, 'shaggydogtale/view.html', context)
