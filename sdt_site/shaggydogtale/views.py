@@ -23,9 +23,15 @@ def Contributed(request, user_id=None):
         contributions = Contribution.objects.filter(user = user)
         title = f'{user.username}\'s Tales'
 
+    rating = 0
+    for contribution in contributions.all():
+        for vote in contribution.story.votes.all():
+            rating += vote.vote
+
     context = {
         'title': title,
-        'contributions': contributions
+        'contributions': contributions,
+        'rating': rating
     }
 
     return render(request, 'shaggydogtale/contributed.html', context)
