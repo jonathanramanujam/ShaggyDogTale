@@ -175,8 +175,9 @@ def Create(request):
 
 def Print(request, story_id):
     story = Story.objects.get(pk=story_id)
+    contributions = story.contributions.all()
     template = loader.get_template('shaggydogtale/print.html')
-    html = template.render({'story': story})
+    html = template.render({'story': story, 'contributions': contributions})
     options = {
         'page-size': 'Letter',
         'encoding': 'UTF-8'
