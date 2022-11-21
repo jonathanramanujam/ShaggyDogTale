@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from .models import Story, Contribution, User, Vote
 from .forms import BeginningForm, MiddleForm, EndForm
 from django.contrib import messages
+import pdfkit
+from django.http import HttpResponse
+from django.template import loader
 
 # Create your views here.
 def Browse(request):
@@ -99,35 +102,36 @@ def View(request, story_id):
 
     # Else, the current user has not contributed to the story
     else:
-        # if middle has not been written, show middleform
-        if contributions.count() == 1:
-            form = MiddleForm(request.POST or None, instance=story)
-            if form.is_valid():
-                story_id = form.save()
-                Contribution.objects.create(user=request.user, story=story_id, section='m')
-                messages.success(request, f'Middle created for {story.title}!')
-                return redirect('shaggydogtale:view', story_id=story.id)
-        # elseif end has not been written, show endform
-        elif contributions.count() == 2:
-            form = EndForm(request.POST or None, instance=story)
-            if form.is_valid():
-                story_id = form.save()
-                Contribution.objects.create(user=request.user, story=story_id, section='e')
-                messages.success(request, f'End created for {story.title}!')
-                return redirect('shaggydogtale:view', story_id=story.id)
-        # otherwise, the story is complete and can be voted on
-        else:
-            # storyVotes = Vote.objects.filter(story=story_id)
-            userVote = Vote.objects.filter(user=request.user, story=story_id)
-            if userVote.count() == 0:
-                if 'Upvote' in request.POST:
-                    Vote.objects.create(user=request.user, story=story, vote=1)
-                    messages.success(request, f'Upvoted {story.title}!')
+        if request.user in request:
+            # if middle has not been written, show middleform
+            if contributions.count() == 1:
+                form = MiddleForm(request.POST or None, instance=story)
+                if form.is_valid():
+                    story_id = form.save()
+                    Contribution.objects.create(user=request.user, story=story_id, section='m')
+                    messages.success(request, f'Middle created for {story.title}!')
                     return redirect('shaggydogtale:view', story_id=story.id)
-                if 'Downvote' in request.POST:
-                    Vote.objects.create(user=request.user, story=story, vote=-1)
-                    messages.success(request, f'Downvoted {story.title}!')
+            # elseif end has not been written, show endform
+            elif contributions.count() == 2:
+                form = EndForm(request.POST or None, instance=story)
+                if form.is_valid():
+                    story_id = form.save()
+                    Contribution.objects.create(user=request.user, story=story_id, section='e')
+                    messages.success(request, f'End created for {story.title}!')
                     return redirect('shaggydogtale:view', story_id=story.id)
+            # otherwise, the story is complete and can be voted on
+            else:
+                # storyVotes = Vote.objects.filter(story=story_id)
+                userVote = Vote.objects.filter(user=request.user, story=story_id)
+                if userVote.count() == 0:
+                    if 'Upvote' in request.POST:
+                        Vote.objects.create(user=request.user, story=story, vote=1)
+                        messages.success(request, f'Upvoted {story.title}!')
+                        return redirect('shaggydogtale:view', story_id=story.id)
+                    if 'Downvote' in request.POST:
+                        Vote.objects.create(user=request.user, story=story, vote=-1)
+                        messages.success(request, f'Downvoted {story.title}!')
+                        return redirect('shaggydogtale:view', story_id=story.id)
 
     storyRating = 0
     for vote in story.votes.all():
@@ -168,3 +172,18 @@ def Create(request):
     }
 
     return render(request, 'shaggydogtale/create.html', context)
+
+def Print(request, story_id):
+    story = Story.objects.get(pk=story_id)
+    template = loader.get_template('shaggydogtale/view.html')
+    html = template.render({'story': story})
+    options = {
+        'page-size': 'Letter',
+        'encoding': 'UTF-8'
+    }
+    pdf = pdfkit.from_string(html, False, options)
+    response = HttpResponse(pdf, content_type='application/shaggydogtale')
+    response['Content-Disposition'] = 'attachment'
+    filename = f'{story.title}.pdf'
+
+    return response
