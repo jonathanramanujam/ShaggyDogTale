@@ -54,6 +54,11 @@ a.story:hover {
     grid-template-columns: 35% 65%;
 }
 
+.story-text {
+    font-family: 'Neucha', arial, serif;
+    font-size: large;
+}
+
 .background {
     background-color: #fffff7;
 opacity: 1;
