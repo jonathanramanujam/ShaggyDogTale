@@ -1,65 +1,17 @@
 {% extends 'shaggydogtale/base.html' %}
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                storyRating: {{storyRating}}
-                <h5>Contributors</h5>
-                {% if beginningContributor %}
-                    <li>Beginning: <a href="{% url 'shaggydogtale:contributed' beginningContributor.id %}">{{beginningContributor.username}}</a> &ensp; <img src="https://cdn-icons-png.flaticon.com/512/5793/5793514.png" alt="" width="15px"> {{beginningContributorRating}}</li>
-                {% else %}
-                    <li>Beginning: None</li>
-                {% endif %}
-
-                {% if middleContributor %}
-                    <li>Middle: <a href="{% url 'shaggydogtale:contributed' middleContributor.id %}">{{middleContributor.username}}</a> &ensp; <img src="https://cdn-icons-png.flaticon.com/512/5793/5793514.png" alt="" width="15px"> {{middleContributorRating}}</li>
-                {% else %}
-                    <li>Middle: None</li>
-                {% endif %}
-
-                {% if endContributor %}
-                    <li>End: <a href="{% url 'shaggydogtale:contributed' endContributor.id %}">{{endContributor.username}}</a> &ensp; <img src="https://cdn-icons-png.flaticon.com/512/5793/5793514.png" alt="" width="15px"> {{endContributorRating}}</li>
-                {% else %}
-                    <li>End: None</li>
-                {% endif %}
-
-                {% comment %} if user contributed, add a form for their contribution {% endcomment %}
-                {% if userContribution %}
-                    {% if userContribution.section == 'b' %}
-                        <form method="POST">
-                            {% csrf_token %}
-                            {{form.as_table}}
-                            <tr>
-                                <button class="btn btn-primary" type="submit">Save Story</button>
-                            </tr>
-                        </form>
-                    {% else %}
-                        <h2>{{story.title}}</h2>
-                        <hr>
-                        {% if contributions.count == 3 %}
-                            <p>{{story.beginning}}</p>
-                        {% else %}
-                            <p>{{storyBeginning}}</p>
-                        {% endif %}
-                    {% endif %}
-
-                    {% if userContribution.section == 'm' %}
-                        <form method="POST">
-                            {% csrf_token %}
-                            {{form.as_table}}
-                            <tr>
-                                <button class="btn btn-primary" type="submit">Save Story</button>
-                            </tr>
-                        </form>
-                    {% else %}
-                        {% if contributions.count == 3 %}
-                        <p>{{story.middle}}</p>
-                        {% else %}
-                            <p>{{storyMiddle}}</p>
-                        {% endif %}
-                    {% endif %}
-
-                    {% if userContribution.section == 'e' %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="page-title">{{story.title}}</h1>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {% comment %} if user contributed, add a form for their contribution {% endcomment %}
+            {% if userContribution %}
+                {% if userContribution.section == 'b' %}
                     <form method="POST">
                         {% csrf_token %}
                         {{form.as_table}}
@@ -67,61 +19,125 @@
                             <button class="btn btn-primary" type="submit">Save Story</button>
                         </tr>
                     </form>
-                    {% else %}
-                        {% if contributions.count == 3 %}
-                        <p>{{story.end}}</p>
-                        {% else %}
-                            <p>{{storyEnd}}</p>
-                        {% endif %}
-                    {% endif %}
-
-                {% comment %} If user did not contribute {% endcomment %}
                 {% else %}
-                    <h2>{{story.title}}</h2>
-                    <hr>
-                    {% if contributions.count == 1 %}
-                        <p>{{storyBeginning}}</p>
-                        {% if user.is_authenticated %}
-                            <form method="POST">
-                                {% csrf_token %}
-                                {{form.as_table}}
-                                <tr>
-                                    <button class="btn btn-primary" type="submit">Save Story</button>
-                                </tr>
-                            </form>
-                        {% endif %}
-
-                    {% elif contributions.count == 2 %}
-                        <p>{{storyMiddle}}</p>
-                        {% if user.is_authenticated %}
-                            <form method="POST">
-                                {% csrf_token %}
-                                {{form.as_table}}
-                                <tr>
-                                    <button class="btn btn-primary" type="submit">Save Story</button>
-                                </tr>
-                            </form>
-                        {% endif %}
-
-                    {% elif contributions.count == 3 %}
+                    {% if contributions.count == 3 %}
                         <p>{{story.beginning}}</p>
-                        <p>{{story.middle}}</p>
-                        <p>{{story.end}}</p>
-                    {% endif %}
-
-                    {% if userVote.count == 0 %}
-                        <form method="POST">
-                            {% csrf_token %}
-                            <button class="btn btn-primary" name="Upvote" type="submit">Upvote</button>
-                        </form>
-                        <form method="POST">
-                            {% csrf_token %}
-                            <button class="btn btn-primary" name="Downvote" type="submit">Downvote</button>
-                        </form>
+                    {% else %}
+                        <p>{{storyBeginning}}</p>
                     {% endif %}
                 {% endif %}
-                <a href="{% url 'shaggydogtale:print' story.id %}" class="btn btn-primary">Save PDF</a>
-            </div>
+
+                {% if userContribution.section == 'm' %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{form.as_table}}
+                        <tr>
+                            <button class="btn btn-primary" type="submit">Save Story</button>
+                        </tr>
+                    </form>
+                {% else %}
+                    {% if contributions.count == 3 %}
+                    <p>{{story.middle}}</p>
+                    {% else %}
+                        <p>{{storyMiddle}}</p>
+                    {% endif %}
+                {% endif %}
+
+                {% if userContribution.section == 'e' %}
+                <form method="POST">
+                    {% csrf_token %}
+                    {{form.as_table}}
+                    <tr>
+                        <button class="btn btn-primary" type="submit">Save Story</button>
+                    </tr>
+                </form>
+                {% else %}
+                    {% if contributions.count == 3 %}
+                    <p>{{story.end}}</p>
+                    {% else %}
+                        <p>{{storyEnd}}</p>
+                    {% endif %}
+                {% endif %}
+
+            {% comment %} If user did not contribute {% endcomment %}
+            {% else %}
+                <h2>{{story.title}}</h2>
+                <hr>
+                {% if contributions.count == 1 %}
+                    <p>{{storyBeginning}}</p>
+                    {% if user.is_authenticated %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{form.as_table}}
+                            <tr>
+                                <button class="btn btn-primary" type="submit">Save Story</button>
+                            </tr>
+                        </form>
+                    {% endif %}
+
+                {% elif contributions.count == 2 %}
+                    <p>{{storyMiddle}}</p>
+                    {% if user.is_authenticated %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{form.as_table}}
+                            <tr>
+                                <button class="btn btn-primary" type="submit">Save Story</button>
+                            </tr>
+                        </form>
+                    {% endif %}
+
+                {% elif contributions.count == 3 %}
+                    <p>{{story.beginning}}</p>
+                    <p>{{story.middle}}</p>
+                    <p>{{story.end}}</p>
+                {% endif %}
+
+                {% if userVote.count == 0 %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-primary" name="Upvote" type="submit">Upvote</button>
+                    </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-primary" name="Downvote" type="submit">Downvote</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="col">
+            <h3 class="page-title">
+                Treats
+                <div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/5793/5793514.png" alt="" width="25px"><b>{{storyRating}}</b>
+                </div>
+            </h3>
+            <h3 class="page-title">Contributors</h3>
+            {% if beginningContributor %}
+                <li><a class="story" href="{% url 'shaggydogtale:contributed' beginningContributor.id %}">{{beginningContributor.username}}</a> &ensp; <img src="https://cdn-icons-png.flaticon.com/512/5793/5793514.png" alt="" width="15px"> {{beginningContributorRating}}</li>
+            {% else %}
+                <li>None</li>
+            {% endif %}
+
+            {% if middleContributor %}
+                <li><a class="story" href="{% url 'shaggydogtale:contributed' middleContributor.id %}">{{middleContributor.username}}</a> &ensp; <img src="https://cdn-icons-png.flaticon.com/512/5793/5793514.png" alt="" width="15px"> {{middleContributorRating}}</li>
+            {% else %}
+                <li>None</li>
+            {% endif %}
+
+            {% if endContributor %}
+                <li><a class="story" href="{% url 'shaggydogtale:contributed' endContributor.id %}">{{endContributor.username}}</a> &ensp; <img src="https://cdn-icons-png.flaticon.com/512/5793/5793514.png" alt="" width="15px"> {{endContributorRating}}</li>
+            {% else %}
+                <li>None</li>
+            {% endif %}
+            <hr>
+            <a href="{% url 'shaggydogtale:print' story.id %}" class="btn btn-primary">Download PDF</a>
         </div>
     </div>
+
+
+
+        </div>
+    </div>
+</div>
 {% endblock body %}

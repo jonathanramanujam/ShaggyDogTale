@@ -1,7 +1,27 @@
 {% extends 'shaggydogtale/base.html' %}
 {% block body %}
-<h2>Browse Tales</h2>
-    {% for story in stories %}
-        <a href="{% url 'shaggydogtale:view' story.id %}">{{story.title}}</a>
-    {% endfor %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="page-title">Browse Tales</h1>
+            <hr>
+            {% for story in stories %}
+                <div class="story-item">
+                    <div class="col">
+                        <a class="story" href="{% url 'shaggydogtale:view' story.id %}">{{story.title}}</a>
+                    </div>
+                    <div class="col">
+                        {% if story.contributions.count < 3 %}
+                            <div style="color: red">Unfinished</div>
+                        {% else %}
+                            {{story.votes.count}} votes
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
 {% endblock body %}
