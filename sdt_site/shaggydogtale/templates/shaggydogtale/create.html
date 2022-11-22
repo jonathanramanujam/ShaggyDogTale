@@ -3,13 +3,12 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h2>Create Page</h2>
+            <h1 class="page-title">Create a Tale</h1>
             <hr>
-            User_ID: {{user.id}}
             <form method="POST">
                 {% csrf_token %}
                 <table>
-                    {{beginningForm.as_table}}
+                    {{beginningForm.as_p}}
                 </table>
                 <tr>
                     <button class="btn btn-primary" type="submit">Save Story</button>

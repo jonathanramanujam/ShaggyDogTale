@@ -1,8 +1,14 @@
 {% extends 'shaggydogtale/base.html' %}
 {% block body %}
-<div class="row">
-    <div class="col-md-3">
-        <div style="margin:50px">
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="page-title">Login</h1>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
             <form method="POST">
                 {% csrf_token %}
                 <table>
@@ -14,15 +20,16 @@
                 </table>
             </form>
         </div>
-    </div>
-    <div class="col-md-2" style="margin:50px">
-        <div class="row">
-            <a class="btn btn-success" href="{% url 'register' %}">Register a new User</a>
-        </div>
-        <div><br /></div>
-        <div class="row">
-            <a class="btn btn-success" href="{% url 'shaggydogtale:browse' %}">Continue as Guest</a>
+        <div class="col-md-2" style="margin-left:20px">
+            <div class="row">
+                <a class="btn btn-success" href="{% url 'register' %}">Register a new User</a>
+            </div>
+            <div><br /></div>
+            <div class="row">
+                <a class="btn btn-success" href="{% url 'shaggydogtale:browse' %}">Continue as Guest</a>
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock %}

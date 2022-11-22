@@ -40,7 +40,7 @@ def Contributed(request, user_id=None):
     return render(request, 'shaggydogtale/contributed.html', context)
 
 
-def View(request, story_id):
+def View(request, story_id, editMode=False):
     story = Story.objects.get(id=story_id)
     storyBeginning = "..." + story.beginning[round(len(story.beginning)/2) : len(story.beginning)]
     storyMiddle = "..." + story.middle[round(len(story.middle)/2) : len(story.middle)]
@@ -90,18 +90,21 @@ def View(request, story_id):
             if form.is_valid():
                 form.save()
                 messages.success(request, f'Beginning updated for {story.title}!')
+                return redirect('shaggydogtale:view', story_id=story.id)
         # elseif contribution is middle, add middleform
         elif userContribution.section == 'm':
             form = MiddleForm(request.POST or None, instance=story)
             if form.is_valid():
                 form.save()
                 messages.success(request, f'Middle updated for {story.title}!')
+                return redirect('shaggydogtale:view', story_id=story.id)
         # elseif contribution is end, add endform
         elif userContribution.section == 'e':
             form = EndForm(request.POST or None, instance=story)
             if form.is_valid():
                 form.save()
                 messages.success(request, f'End updated for {story.title}!')
+                return redirect('shaggydogtale:view', story_id=story.id)
 
     # Else, the current user has not contributed to the story
     else:
@@ -155,7 +158,8 @@ def View(request, story_id):
         'message': message,
         'form': form,
         'userVote': userVote,
-        'storyRating': storyRating
+        'storyRating': storyRating,
+        'editMode': editMode
     }
 
     return render(request, 'shaggydogtale/view.html', context)

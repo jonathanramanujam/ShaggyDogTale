@@ -1,8 +1,26 @@
 {% extends 'shaggydogtale/base.html' %}
 {% block body %}
-<h2>{{title}}</h2>
-<h3>Treats:&nbsp;<img src="https://cdn-icons-png.flaticon.com/512/5793/5793514.png" alt="" width="25px"> {{rating}}</h3>
-    {% for contribution in contributions %}
-        <a href="{% url 'shaggydogtale:view' contribution.story.id %}">{{contribution.story.title}}</a>
-    {% endfor %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="page-title">{{title}}</h1>
+            <hr>
+            <h3>Treats:&nbsp;<img src="https://cdn-icons-png.flaticon.com/512/5793/5793514.png" alt="" width="25px"> {{rating}}</h3>
+                {% for contribution in contributions %}<div class="story-item">
+                    <div class="col">
+                        <a class="story" href="{% url 'shaggydogtale:view' contribution.story.id %}">{{contribution.story.title}}</a>
+                    </div>
+                    <div class="col">
+                        {% if contribution.story.contributions.count < 3 %}
+                            <div style="color: red">Unfinished</div>
+                        {% else %}
+                            {{contribution.story.votes.count}} votes
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+
 {% endblock body %}

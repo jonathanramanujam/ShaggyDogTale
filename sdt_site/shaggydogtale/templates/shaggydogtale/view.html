@@ -11,10 +11,10 @@
         <div class="col">
             {% comment %} if user contributed, add a form for their contribution {% endcomment %}
             {% if userContribution %}
-                {% if userContribution.section == 'b' %}
-                    <form method="POST" id="storyForm">
+                {% if userContribution.section == 'b' and editMode %}
+                    <form method="POST" id="storyForm" class="story-block">
                         {% csrf_token %}
-                        {{form.as_table}}
+                        {{form.as_p}}
                     </form>
                 {% else %}
                     {% if contributions.count == 3 %}
@@ -24,10 +24,10 @@
                     {% endif %}
                 {% endif %}
 
-                {% if userContribution.section == 'm' %}
-                    <form method="POST" id="storyForm">
+                {% if userContribution.section == 'm' and editMode %}
+                    <form method="POST" id="storyForm" class="story-block">
                         {% csrf_token %}
-                        {{form.as_table}}
+                        {{form.as_p}}
                     </form>
                 {% else %}
                     {% if contributions.count == 3 %}
@@ -37,10 +37,10 @@
                     {% endif %}
                 {% endif %}
 
-                {% if userContribution.section == 'e' %}
-                <form method="POST" id="storyForm">
+                {% if userContribution.section == 'e' and editMode %}
+                <form method="POST" id="storyForm" class="story-block">
                     {% csrf_token %}
-                    {{form.as_table}}
+                    {{form.as_p}}
                 </form>
                 {% else %}
                     {% if contributions.count == 3 %}
@@ -52,23 +52,21 @@
 
             {% comment %} If user did not contribute {% endcomment %}
             {% else %}
-                <h2>{{story.title}}</h2>
-                <hr>
                 {% if contributions.count == 1 %}
                     <p class="story-text">{{storyBeginning}}</p>
                     {% if user.is_authenticated %}
-                        <form method="POST" id="storyForm">
+                        <form method="POST" id="storyForm" class="story-block">
                             {% csrf_token %}
-                            {{form.as_table}}
+                            {{form.as_p}}
                         </form>
                     {% endif %}
 
                 {% elif contributions.count == 2 %}
                     <p class="story-text">{{storyMiddle}}</p>
                     {% if user.is_authenticated %}
-                        <form method="POST" id="storyForm">
+                        <form method="POST" id="storyForm" class="story-block">
                             {% csrf_token %}
-                            {{form.as_table}}
+                            {{form.as_p}}
                         </form>
                     {% endif %}
 
@@ -77,20 +75,13 @@
                     <p class="story-text">{{story.middle}}</p>
                     <p class="story-text">{{story.end}}</p>
                 {% endif %}
-
-                {% if userVote.count == 0 %}
-                    <form method="POST">
-                        {% csrf_token %}
-                        <button class="btn btn-primary" name="Upvote" type="submit">Upvote</button>
-                    </form>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <button class="btn btn-primary" name="Downvote" type="submit">Downvote</button>
-                    </form>
-                {% endif %}
             {% endif %}
         </div>
         <div class="col">
+            {% if userContribution %}
+                <p><i>You have added to this story!
+                <br>Select "Edit Story" to make changes to your section.</i></p>
+            {% endif %}
             <h3 class="page-title">
                 Treats
                 <div>
@@ -116,8 +107,26 @@
                 <li>None</li>
             {% endif %}
             <hr>
-            <button class="btn btn-success" type="submit"></button>
-            <button class="btn btn-success" form="storyForm" type="submit">Save Story</button>
+            {% if userContribution %}
+                {% if editMode %}
+                    <button class="btn btn-success" form="storyForm" type="submit">Save Story</button>
+                {% else %}
+                    <a href="{% url 'shaggydogtale:view' story.id True %}" class="btn btn-primary">Edit Story</a>
+                {% endif %}
+            {% else %}
+                {% if contributions.count == 3 and userVote.count == 0 %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-primary" name="Upvote" type="submit">Upvote</button>
+                    </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-primary" name="Downvote" type="submit">Downvote</button>
+                    </form>
+                {% elif contributions.count < 3 and user.is_authenticated %}
+                    <button class="btn btn-success" form="storyForm" type="submit">Save Story</button>
+                {% endif %}
+            {% endif %}
             <a href="{% url 'shaggydogtale:print' story.id %}" class="btn btn-warning">Download PDF</a>
         </div>
     </div>
