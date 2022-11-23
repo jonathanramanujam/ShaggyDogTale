@@ -18,9 +18,9 @@
                     </form>
                 {% else %}
                     {% if contributions.count == 3 %}
-                        <p class="story-text">{{story.beginning}}</p>
+                        <p class="story-text">{{story.beginning|linebreaksbr}}</p>
                     {% else %}
-                        <p class="story-text">{{storyBeginning}}</p>
+                        <p class="story-text">{{storyBeginning|linebreaksbr}}</p>
                     {% endif %}
                 {% endif %}
 
@@ -31,9 +31,9 @@
                     </form>
                 {% else %}
                     {% if contributions.count == 3 %}
-                        <p class="story-text">{{story.middle}}</p>
+                        <p class="story-text">{{story.middle|linebreaksbr}}</p>
                     {% else %}
-                        <p class="story-text">{{storyMiddle}}</p>
+                        <p class="story-text">{{storyMiddle|linebreaksbr}}</p>
                     {% endif %}
                 {% endif %}
 
@@ -44,16 +44,16 @@
                 </form>
                 {% else %}
                     {% if contributions.count == 3 %}
-                        <p class="story-text">{{story.end}}</p>
+                        <p class="story-text">{{story.end|linebreaksbr}}</p>
                     {% else %}
-                        <p class="story-text">{{storyEnd}}</p>
+                        <p class="story-text">{{storyEnd|linebreaksbr}}</p>
                     {% endif %}
                 {% endif %}
 
             {% comment %} If user did not contribute {% endcomment %}
             {% else %}
                 {% if contributions.count == 1 %}
-                    <p class="story-text">{{storyBeginning}}</p>
+                    <p class="story-text">{{storyBeginning|linebreaksbr}}</p>
                     {% if user.is_authenticated %}
                         <form method="POST" id="storyForm" class="story-block">
                             {% csrf_token %}
@@ -62,7 +62,7 @@
                     {% endif %}
 
                 {% elif contributions.count == 2 %}
-                    <p class="story-text">{{storyMiddle}}</p>
+                    <p class="story-text">{{storyMiddle|linebreaksbr}}</p>
                     {% if user.is_authenticated %}
                         <form method="POST" id="storyForm" class="story-block">
                             {% csrf_token %}
@@ -71,9 +71,9 @@
                     {% endif %}
 
                 {% elif contributions.count == 3 %}
-                    <p class="story-text">{{story.beginning}}</p>
-                    <p class="story-text">{{story.middle}}</p>
-                    <p class="story-text">{{story.end}}</p>
+                    <p class="story-text">{{story.beginning|linebreaksbr}}</p>
+                    <p class="story-text">{{story.middle|linebreaksbr}}</p>
+                    <p class="story-text">{{story.end|linebreaksbr}}</p>
                 {% endif %}
             {% endif %}
         </div>
@@ -81,6 +81,10 @@
             {% if userContribution %}
                 <p><i>You have added to this story!
                 <br>Select "Edit Story" to make changes to your section.</i></p>
+            {% else %}
+                <p><i>You have not contributed to this story!
+                    <br>Add to the existing story and then select "Save Story".
+                </i></p>
             {% endif %}
             <h3 class="page-title">
                 Treats
