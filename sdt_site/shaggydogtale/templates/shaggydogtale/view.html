@@ -82,9 +82,15 @@
                 <p><i>You have added to this story!
                 <br>Select "Edit Story" to make changes to your section.</i></p>
             {% else %}
-                <p><i>You have not contributed to this story!
-                    <br>Add to the existing story and then select "Save Story".
-                </i></p>
+            <p><i>
+                {% if contributions.count == 1 %}
+                    <b>This story needs a middle!</b>
+                {% elif contributions.count == 2 %}
+                    <b>This story needs an end!</b>
+                {% endif %}
+                <br>Add to the existing story and then select "Save Story".
+            </i></p>
+
             {% endif %}
             <h3 class="page-title">
                 Treats
