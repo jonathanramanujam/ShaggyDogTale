@@ -119,14 +119,20 @@
                 {% endif %}
             {% else %}
                 {% if contributions.count == 3 and userVote.count == 0 %}
+                <div style="float:left;">
                     <form method="POST">
                         {% csrf_token %}
-                        <button class="btn btn-primary" name="Upvote" type="submit">Upvote</button>
+                        <button class="btn btn-success" name="Upvote" type="submit">Upvote</button>
                     </form>
+                </div>
+                <div style="float:left; margin-left:5px; margin-right:5px;">
                     <form method="POST">
                         {% csrf_token %}
-                        <button class="btn btn-primary" name="Downvote" type="submit">Downvote</button>
+                        <button class="btn btn-danger" name="Downvote" type="submit">Downvote</button>
                     </form>
+                </div>
+
+
                 {% elif contributions.count < 3 and user.is_authenticated %}
                     <button class="btn btn-success" form="storyForm" type="submit">Save Story</button>
                 {% endif %}
