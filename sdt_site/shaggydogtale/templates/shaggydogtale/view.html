@@ -78,20 +78,23 @@
             {% endif %}
         </div>
         <div class="col">
-            {% if userContribution %}
-                <p><i>You have added to this story!
-                <br>Select "Edit Story" to make changes to your section.</i></p>
-            {% else %}
-            <p><i>
-                {% if contributions.count == 1 %}
-                    <b>This story needs a middle!</b>
-                {% elif contributions.count == 2 %}
-                    <b>This story needs an end!</b>
+            {% if user.is_authenticated %}
+                {% if userContribution %}
+                    <p><i>You have added to this story!
+                    <br>Select "Edit Story" to make changes to your section.</i></p>
+                {% else %}
+                <p><i>
+                    {% if contributions.count == 1 %}
+                        <b>This story needs a middle!</b>
+                        <br>Add to the existing story and then select "Save Story".
+                    {% elif contributions.count == 2 %}
+                        <b>This story needs an end!</b>
+                        <br>Add to the existing story and then select "Save Story".
+                    {% endif %}
+                </i></p>
                 {% endif %}
-                <br>Add to the existing story and then select "Save Story".
-            </i></p>
-
             {% endif %}
+
             <h3 class="page-title">
                 Treats
                 <div>
