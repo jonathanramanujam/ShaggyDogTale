@@ -14,7 +14,7 @@
                         {% if story.contributions.count < 3 %}
                             <div style="color: red">Unfinished</div>
                         {% else %}
-                            {{story.votes.count}} votes
+                            <div style="color: green">{{story.votes.count}} votes</div>
                         {% endif %}
                     </div>
                 </div>
